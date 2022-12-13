@@ -1,0 +1,20 @@
+{
+  "name": "ouc-auto-login",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run tsc && node dist/index.js",
+    "tsc": "tsc"
+  },
+  "keywords": [],
+  "author": "HCLonely",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.14"
+  }
+}
