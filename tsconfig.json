@@ -8,7 +8,7 @@
     "declarationMap": false, // 是否生成声明文件map文件（便于调试）
     "moduleResolution": "node",
     "module": "CommonJS",
-    "target": "ES2022", // 转化成的目标语言
+    "target": "ES6", // 转化成的目标语言
     "baseUrl": "./",
     "allowJs": true,
     "downlevelIteration": true,

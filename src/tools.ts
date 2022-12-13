@@ -42,31 +42,23 @@ const login = async (username: string, password: string): Promise<boolean> => {
   return await loginNode(username, password) || await loginShell(username, password);
 }
 
-const checkNetNode = async () => {
+const checkNetNode = async (): Promise<boolean> => {
   return axios({
     url: 'http://baidu.com',
     method: 'get',
-    timeout: 6000
+    maxRedirects: 0,
+    timeout: 60000
   })
     .then((response) => {
-      if (response.data.includes('NextURL')) {
-        return false;
-      }
-      return true;
       console.log(response);
-      /*
-      '<html>\n' +
-    '<meta http-equiv="refresh" content="0;url=http://www.baidu.com/">\n' +
-    '</html>\n'
-    */
+      return true;
     })
     .catch((error) => {
       console.log(error.response);
-      console.log(error.response?.headers);
-      // if (error.response?.headers)
+      return false;
     });
 }
-const checkNetShell = () => {
+const checkNetShell = (): boolean => {
   try {
     const result = execSync(`curl -sS --connect-timeout 60 http://baidu.com`)?.toString();
     console.log(result);
@@ -84,4 +76,4 @@ const checkNet = async () => {
   return await checkNetNode() || checkNetShell();
 }
 
-export { login, checkNetShell }
+export { login, checkNet }

@@ -1,9 +1,18 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkNetShell = exports.login = void 0;
+exports.checkNet = exports.login = void 0;
 const axios_1 = require("axios");
 const child_process_1 = require("child_process");
-const loginNode = async (username, password) => {
+const loginNode = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
     return (0, axios_1.default)({
         url: `http://192.168.101.201:801/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=0.0.0.0&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh`,
         method: 'get',
@@ -15,8 +24,9 @@ const loginNode = async (username, password) => {
         }
     })
         .then((response) => {
+        var _a, _b;
         console.log(response);
-        if (response.data?.includes('认证成功') || response.data?.includes('已经在线')) {
+        if (((_a = response.data) === null || _a === void 0 ? void 0 : _a.includes('认证成功')) || ((_b = response.data) === null || _b === void 0 ? void 0 : _b.includes('已经在线'))) {
             return true;
         }
         return false;
@@ -25,12 +35,13 @@ const loginNode = async (username, password) => {
         console.log(error);
         return false;
     });
-};
-const loginShell = async (username, password) => {
+});
+const loginShell = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const result = (0, child_process_1.execSync)(`curl -sS "http://192.168.101.201:801/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=0.0.0.0&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh" -H "Host: 192.168.101.201:801" -H "Referer: http://192.168.101.201/" -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27")`)?.toString();
+        const result = (_a = (0, child_process_1.execSync)(`curl -sS "http://192.168.101.201:801/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=0.0.0.0&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh" -H "Host: 192.168.101.201:801" -H "Referer: http://192.168.101.201/" -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27")`)) === null || _a === void 0 ? void 0 : _a.toString();
         console.log(result);
-        if (result?.includes('认证成功') || result?.includes('已经在线')) {
+        if ((result === null || result === void 0 ? void 0 : result.includes('认证成功')) || (result === null || result === void 0 ? void 0 : result.includes('已经在线'))) {
             return true;
         }
         return false;
@@ -39,46 +50,33 @@ const loginShell = async (username, password) => {
         console.log(error);
         return false;
     }
-};
-const login = async (username, password) => {
-    if (await loginNode(username, password)) {
-        return true;
-    }
-    if (await loginShell(username, password)) {
-        return true;
-    }
-    return false;
-};
+});
+const login = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+    return (yield loginNode(username, password)) || (yield loginShell(username, password));
+});
 exports.login = login;
-const checkNetNode = async () => {
+const checkNetNode = () => __awaiter(void 0, void 0, void 0, function* () {
     return (0, axios_1.default)({
         url: 'http://baidu.com',
         method: 'get',
-        timeout: 6000
+        maxRedirects: 0,
+        timeout: 60000
     })
         .then((response) => {
-        if (response.data.includes('NextURL')) {
-            return false;
-        }
-        return true;
         console.log(response);
-        /*
-        '<html>\n' +
-      '<meta http-equiv="refresh" content="0;url=http://www.baidu.com/">\n' +
-      '</html>\n'
-      */
+        return true;
     })
         .catch((error) => {
         console.log(error.response);
-        console.log(error.response?.headers);
-        // if (error.response?.headers)
+        return false;
     });
-};
+});
 const checkNetShell = () => {
+    var _a;
     try {
-        const result = (0, child_process_1.execSync)(`curl -sS --connect-timeout 60 http://baidu.com`)?.toString();
+        const result = (_a = (0, child_process_1.execSync)(`curl -sS --connect-timeout 60 http://baidu.com`)) === null || _a === void 0 ? void 0 : _a.toString();
         console.log(result);
-        if (result?.includes('NextURL')) {
+        if (result === null || result === void 0 ? void 0 : result.includes('NextURL')) {
             return false;
         }
         return true;
@@ -88,4 +86,7 @@ const checkNetShell = () => {
         return false;
     }
 };
-exports.checkNetShell = checkNetShell;
+const checkNet = () => __awaiter(void 0, void 0, void 0, function* () {
+    return (yield checkNetNode()) || checkNetShell();
+});
+exports.checkNet = checkNet;
