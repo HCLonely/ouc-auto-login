@@ -7,6 +7,7 @@ const crontabData = (PCUserSid, workDir, filePath, username, password, interval 
   <RegistrationInfo>
     <Date>${dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS0000')}</Date>
     <Author>HCLonely</Author>
+    <Description>自动登录中国海洋大学OUC-AUTO网络帐号。</Description>
     <URI>\\OUC-AUTO-Login</URI>
   </RegistrationInfo>
   <Triggers>

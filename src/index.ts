@@ -9,7 +9,8 @@ import { blue, green, red } from 'chalk';
 import { createInterface } from 'readline';
 
 (async () => {
-  console.log(`OUC-AUTO-Login By ${green('HCLonely')}\n`);
+  const version = '1.0.0';
+  console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
   // 获取传入的参数
   const ARGV: {
     [name: string]: string
@@ -26,8 +27,9 @@ import { createInterface } from 'readline';
   if (Object.keys(ARGV).length === 0) {
     const status = execSync('chcp 437 && schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
     execSync('chcp 936');
+    console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
     if (status?.includes('Ready') || status?.includes('Running')) {
-      log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
+      console.log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
       const keep = setInterval(() => { }, 3600000);
       console.log('按任意键关闭此窗口...');
       process.stdin.setRawMode(true);
@@ -61,7 +63,7 @@ import { createInterface } from 'readline';
     console.log(blue(`如果计划任务为创建，请自行导入${green(join(workDir, 'OUC-AUTO-Login.xml'))}文件！`));
 
     const keep = setInterval(() => { }, 3600000);
-    console.log('按任意键关闭此窗口...');
+    console.log('点击右上角关闭此窗口...');
     process.stdin.setRawMode(true);
     process.stdin.on('data', () => {
       clearInterval(keep);
