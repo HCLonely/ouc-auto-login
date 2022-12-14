@@ -20,7 +20,7 @@ const chalk_1 = require("chalk");
 const readline_1 = require("readline");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const version = '1.0.0';
-    console.log(`OUC-AUTO-Login v${version} By ${(0, chalk_1.green)('HCLonely')}\n`);
+    console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
     // 获取传入的参数
     const ARGV = {};
     process.argv.forEach((e) => {
@@ -34,9 +34,9 @@ const readline_1 = require("readline");
     if (Object.keys(ARGV).length === 0) {
         const status = (0, child_process_1.execSync)('chcp 437 && schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
         (0, child_process_1.execSync)('chcp 936');
-        console.log(`OUC-AUTO-Login v${version} By ${(0, chalk_1.green)('HCLonely')}\n`);
+        console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
         if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
-            (0, tools_1.log)(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
+            console.log(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
             const keep = setInterval(() => { }, 3600000);
             console.log('按任意键关闭此窗口...');
             process.stdin.setRawMode(true);

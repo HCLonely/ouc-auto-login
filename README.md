@@ -19,3 +19,7 @@
 ![Step 3](pics/Snipaste_2022-12-14_22-11-08.png?raw=true)
 4. 输入当前计算机账户的密码（如果有）。
 ![Result](pics/Snipaste_2022-12-14_22-14-10.png?raw=true)
+
+## 其他说明
+
+- 计划任务创建完成后不要将`OUC-AUTO-Login.exe`文件移动到其他位置，不要重命名`OUC-AUTO-Login.exe`文件！
