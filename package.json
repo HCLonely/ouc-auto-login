@@ -1,22 +1,24 @@
 {
   "name": "ouc-auto-login",
   "version": "1.0.0",
-  "description": "",
+  "description": "自动登录中国海洋大学OUC-AUTO网络帐号。",
   "main": "index.js",
   "scripts": {
-    "test": "npm run tsc && node dist/index.js",
+    "test": "tsc && node dist/index.js",
     "build": "tsc && pkg -t win --compress GZip dist/index.js -o OUC-AUTO-Login.exe",
     "tsc": "tsc"
   },
   "keywords": [],
   "author": "HCLonely",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
-    "typescript": "^4.9.4"
+    "chalk": "4",
+    "dayjs": "^1.11.7"
   },
   "devDependencies": {
     "@types/node": "^18.11.14",
-    "pkg": "^5.8.0"
+    "pkg": "^5.8.0",
+    "typescript": "^4.9.4"
   }
 }
