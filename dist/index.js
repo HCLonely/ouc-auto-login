@@ -19,6 +19,7 @@ const crontab_1 = require("./crontab");
 const chalk_1 = require("chalk");
 const readline_1 = require("readline");
 (() => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(`OUC-AUTO-Login By ${(0, chalk_1.green)('HCLonely')}\n`);
     // 获取传入的参数
     const ARGV = {};
     process.argv.forEach((e) => {
@@ -34,10 +35,13 @@ const readline_1 = require("readline");
         (0, child_process_1.execSync)('chcp 936');
         if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
             (0, tools_1.log)(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
-            setInterval(() => { }, 3600000);
-            (0, tools_1.log)('按任意键关闭此窗口...');
+            const keep = setInterval(() => { }, 3600000);
+            console.log('按任意键关闭此窗口...');
             process.stdin.setRawMode(true);
-            process.stdin.on('data', () => process.exit(0));
+            process.stdin.on('data', () => {
+                clearInterval(keep);
+                process.exit(0);
+            });
             return;
         }
     }
@@ -55,30 +59,39 @@ const readline_1 = require("readline");
         const interval = yield (0, tools_1.ask)(rl, '请输入多久检测一次（单位：分钟）:', true);
         rl.close();
         (0, fs_1.writeFileSync)('OUC-AUTO-Login.xml', (0, crontab_1.crontabData)(PCUserSid, workDir, filePath, username, password, interval));
-        (0, child_process_1.execSync)(`start cmd /s "echo 正在创建定时计划，请输入计算机密码 && schtasks /create /xml ^"${(0, path_1.join)(workDir, 'OUC-AUTO-Login.xml')}^" /tn ^"OUC-AUTO-Login^" /ru ^"${PCUsername.toLowerCase()}^""`);
+        (0, child_process_1.execSync)(`start cmd /k "echo 正在创建定时计划，请输入计算机密码 && schtasks /create /xml ^"${(0, path_1.join)(workDir, 'OUC-AUTO-Login.xml')}^" /tn ^"OUC-AUTO-Login^" /ru ^"${PCUsername.toLowerCase()}^""`);
         (0, child_process_1.execSync)("start taskschd.msc");
         console.log((0, chalk_1.blue)(`请确认是否成功创建计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}！`));
         console.log((0, chalk_1.blue)(`如果计划任务为创建，请自行导入${(0, chalk_1.green)((0, path_1.join)(workDir, 'OUC-AUTO-Login.xml'))}文件！`));
-        setInterval(() => { }, 3600000);
-        (0, tools_1.log)('按任意键关闭此窗口...');
+        const keep = setInterval(() => { }, 3600000);
+        console.log('按任意键关闭此窗口...');
         process.stdin.setRawMode(true);
-        process.stdin.on('data', () => process.exit(0));
+        process.stdin.on('data', () => {
+            clearInterval(keep);
+            process.exit(0);
+        });
         return;
     }
     if (!ARGV.username) {
         (0, tools_1.log)((0, chalk_1.red)('未传入用户名(学号)'));
-        setInterval(() => { }, 3600000);
-        (0, tools_1.log)('按任意键关闭此窗口...');
+        const keep = setInterval(() => { }, 3600000);
+        console.log('按任意键关闭此窗口...');
         process.stdin.setRawMode(true);
-        process.stdin.on('data', () => process.exit(0));
+        process.stdin.on('data', () => {
+            clearInterval(keep);
+            process.exit(0);
+        });
         return;
     }
     if (!ARGV.password) {
         (0, tools_1.log)((0, chalk_1.red)('未传入密码'));
-        setInterval(() => { }, 3600000);
-        (0, tools_1.log)('按任意键关闭此窗口...');
+        const keep = setInterval(() => { }, 3600000);
+        console.log('按任意键关闭此窗口...');
         process.stdin.setRawMode(true);
-        process.stdin.on('data', () => process.exit(0));
+        process.stdin.on('data', () => {
+            clearInterval(keep);
+            process.exit(0);
+        });
         return;
     }
     // 清除昨天之前的日志

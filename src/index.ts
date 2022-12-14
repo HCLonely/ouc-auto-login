@@ -9,7 +9,7 @@ import { blue, green, red } from 'chalk';
 import { createInterface } from 'readline';
 
 (async () => {
-
+  console.log(`OUC-AUTO-Login By ${green('HCLonely')}\n`);
   // 获取传入的参数
   const ARGV: {
     [name: string]: string
@@ -28,10 +28,13 @@ import { createInterface } from 'readline';
     execSync('chcp 936');
     if (status?.includes('Ready') || status?.includes('Running')) {
       log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
-      setInterval(() => { }, 3600000);
-      log('按任意键关闭此窗口...');
+      const keep = setInterval(() => { }, 3600000);
+      console.log('按任意键关闭此窗口...');
       process.stdin.setRawMode(true);
-      process.stdin.on('data', () => process.exit(0));
+      process.stdin.on('data', () => {
+        clearInterval(keep);
+        process.exit(0);
+      });
       return;
     }
   }
@@ -52,32 +55,41 @@ import { createInterface } from 'readline';
     rl.close();
     writeFileSync('OUC-AUTO-Login.xml', crontabData(PCUserSid, workDir, filePath, username, password, interval));
 
-    execSync(`start cmd /s "echo 正在创建定时计划，请输入计算机密码 && schtasks /create /xml ^"${join(workDir, 'OUC-AUTO-Login.xml')}^" /tn ^"OUC-AUTO-Login^" /ru ^"${PCUsername.toLowerCase()}^""`);
+    execSync(`start cmd /k "echo 正在创建定时计划，请输入计算机密码 && schtasks /create /xml ^"${join(workDir, 'OUC-AUTO-Login.xml')}^" /tn ^"OUC-AUTO-Login^" /ru ^"${PCUsername.toLowerCase()}^""`);
     execSync("start taskschd.msc");
     console.log(blue(`请确认是否成功创建计划任务${green('OUC-AUTO-Login')}！`));
     console.log(blue(`如果计划任务为创建，请自行导入${green(join(workDir, 'OUC-AUTO-Login.xml'))}文件！`));
 
-    setInterval(() => { }, 3600000);
-    log('按任意键关闭此窗口...');
+    const keep = setInterval(() => { }, 3600000);
+    console.log('按任意键关闭此窗口...');
     process.stdin.setRawMode(true);
-    process.stdin.on('data', () => process.exit(0));
+    process.stdin.on('data', () => {
+      clearInterval(keep);
+      process.exit(0);
+    });
     return;
   }
 
   if (!ARGV.username) {
     log(red('未传入用户名(学号)'));
-    setInterval(() => { }, 3600000);
-    log('按任意键关闭此窗口...');
+    const keep = setInterval(() => { }, 3600000);
+    console.log('按任意键关闭此窗口...');
     process.stdin.setRawMode(true);
-    process.stdin.on('data', () => process.exit(0));
+    process.stdin.on('data', () => {
+      clearInterval(keep);
+      process.exit(0);
+    });
     return;
   }
   if (!ARGV.password) {
     log(red('未传入密码'));
-    setInterval(() => { }, 3600000);
-    log('按任意键关闭此窗口...');
+    const keep = setInterval(() => { }, 3600000);
+    console.log('按任意键关闭此窗口...');
     process.stdin.setRawMode(true);
-    process.stdin.on('data', () => process.exit(0));
+    process.stdin.on('data', () => {
+      clearInterval(keep);
+      process.exit(0);
+    });
     return;
   }
 

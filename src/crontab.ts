@@ -1,7 +1,8 @@
+import * as dayjs from 'dayjs';
 const crontabData = (PCUserSid: string, workDir: string, filePath: string, username: string, password: string, interval: string = '30') => `<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
-    <Date>2022-12-14T18:50:19.1128085</Date>
+    <Date>${dayjs().format('YYYY-MM-DDTHH:mm:ss.SSS0000')}</Date>
     <Author>HCLonely</Author>
     <URI>\\OUC-AUTO-Login</URI>
   </RegistrationInfo>
@@ -12,7 +13,7 @@ const crontabData = (PCUserSid: string, workDir: string, filePath: string, usern
         <Duration>P1D</Duration>
         <StopAtDurationEnd>false</StopAtDurationEnd>
       </Repetition>
-      <StartBoundary>2022-12-14T00:00:00</StartBoundary>
+      <StartBoundary>${dayjs().format('YYYY-MM-DD')}T00:00:00</StartBoundary>
       <ExecutionTimeLimit>PT${interval}M</ExecutionTimeLimit>
       <Enabled>true</Enabled>
       <ScheduleByDay>
