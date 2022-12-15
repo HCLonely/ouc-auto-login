@@ -26,6 +26,7 @@ const ask = (rl: Interface, question: string, isNumber: boolean = false): Promis
     return resolve(answer);
   });
 });
+
 const loginNode = async (username: string, password: string): Promise<boolean> => {
   return axios({
     url: `http://192.168.101.201:801/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=0.0.0.0&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh`,

@@ -1,6 +1,6 @@
 {
   "name": "ouc-auto-login",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "自动登录中国海洋大学OUC-AUTO网络帐号。",
   "main": "index.js",
   "scripts": {
