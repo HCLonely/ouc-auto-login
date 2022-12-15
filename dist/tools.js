@@ -23,7 +23,7 @@ const log = (data, debug = false) => {
     if (!(0, fs_1.existsSync)('logs')) {
         (0, fs_1.mkdirSync)('logs');
     }
-    (0, fs_1.appendFileSync)(`logs/log-${dayjs().format('YYYY-MM-DD')}.txt`, `[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${(0, util_1.format)(data.replace(/\x1B\[[\d]*?m/g, ''))}\n`);
+    (0, fs_1.appendFileSync)(`logs/log-${dayjs().format('YYYY-MM-DD')}.txt`, `[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${(0, util_1.format)(data).replace(/\x1B\[[\d]*?m/g, '')}\n`);
 };
 exports.log = log;
 const ask = (rl, question, isNumber = false) => new Promise((resolve) => {

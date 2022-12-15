@@ -13,7 +13,7 @@ const log = (data: any, debug: boolean = false) => {
   if (!existsSync('logs')) {
     mkdirSync('logs');
   }
-  appendFileSync(`logs/log-${dayjs().format('YYYY-MM-DD')}.txt`, `[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${format(data.replace(/\x1B\[[\d]*?m/g, ''))}\n`);
+  appendFileSync(`logs/log-${dayjs().format('YYYY-MM-DD')}.txt`, `[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${format(data).replace(/\x1B\[[\d]*?m/g, '')}\n`);
 }
 const ask = (rl: Interface, question: string, isNumber: boolean = false): Promise<string> => new Promise((resolve) => {
   rl.question(`${question}`, (chunk) => {
