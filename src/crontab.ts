@@ -21,6 +21,9 @@ const crontabData = (PCUserSid: string, workDir: string, filePath: string, usern
         <DaysInterval>1</DaysInterval>
       </ScheduleByDay>
     </CalendarTrigger>
+    <BootTrigger>
+      <Enabled>true</Enabled>
+    </BootTrigger>
   </Triggers>
   <Principals>
     <Principal id="Author">
