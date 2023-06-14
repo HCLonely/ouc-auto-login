@@ -37,6 +37,29 @@ const readline_1 = require("readline");
         console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
         if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
             console.log(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
+            const rl = (0, readline_1.createInterface)({
+                input: process.stdin,
+                output: process.stdout
+            });
+            const select = yield (0, tools_1.ask)(rl, `输入0删除计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}, 输入其他内容退出本程序:`, true);
+            if ((0, fs_1.existsSync)('OUC-AUTO-Login.xml')) {
+                (0, fs_1.unlinkSync)('OUC-AUTO-Login.xml');
+            }
+            if (select === '0') {
+                (0, child_process_1.execSync)(`chcp 437 && schtasks /delete /tn "OUC-AUTO-Login" /f`);
+                const status = (0, child_process_1.execSync)('schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
+                (0, child_process_1.execSync)('chcp 936');
+                if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
+                    console.log((0, chalk_1.red)(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}删除失败，请尝试自行删除！`));
+                    (0, child_process_1.execSync)("start taskschd.msc");
+                }
+                else {
+                    console.log((0, chalk_1.green)(`计划任务${(0, chalk_1.blue)('OUC-AUTO-Login')}删除成功！`));
+                }
+            }
+            else {
+                process.exit(0);
+            }
             const keep = setInterval(() => { }, 3600000);
             console.log('按任意键关闭此窗口...');
             process.stdin.setRawMode(true);
@@ -47,7 +70,7 @@ const readline_1 = require("readline");
             return;
         }
     }
-    if (!(0, fs_1.existsSync)('OUC-AUTO-Login.xml') && !ARGV.username && !ARGV.password) {
+    if (!ARGV.username && !ARGV.password) {
         const PCUsername = `${(0, os_1.hostname)()}\\${(0, os_1.userInfo)().username}`;
         const PCUserSid = Object.fromEntries((0, child_process_1.execSync)('whoami /user').toString().split(/(\r?\n)+/).map((data) => data.trim().split(/[\s]+/)))[PCUsername.toLowerCase()];
         const workDir = process.cwd();
@@ -59,12 +82,29 @@ const readline_1 = require("readline");
         const username = yield (0, tools_1.ask)(rl, '请输入校园网帐号（学号）:', true);
         const password = yield (0, tools_1.ask)(rl, '请输入校园网密码:');
         const interval = yield (0, tools_1.ask)(rl, '请输入多久检测一次（单位：分钟）:', true);
+        const PCUserPass = yield (0, tools_1.ask)(rl, `请输入当前计算机用户[${PCUsername}]的密码（用于创建计划任务）:`);
         rl.close();
         (0, fs_1.writeFileSync)('OUC-AUTO-Login.xml', (0, crontab_1.crontabData)(PCUserSid, workDir, filePath, username, password, interval));
-        (0, child_process_1.execSync)(`start cmd /k "echo 正在创建定时计划，请输入计算机密码 && schtasks /create /xml ^"${(0, path_1.join)(workDir, 'OUC-AUTO-Login.xml')}^" /tn ^"OUC-AUTO-Login^" /ru ^"${PCUsername.toLowerCase()}^""`);
-        (0, child_process_1.execSync)("start taskschd.msc");
-        console.log((0, chalk_1.blue)(`请确认是否成功创建计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}！`));
-        console.log((0, chalk_1.blue)(`如果计划任务为创建，请自行导入${(0, chalk_1.green)((0, path_1.join)(workDir, 'OUC-AUTO-Login.xml'))}文件！`));
+        console.log(`正在创建定时计划...`);
+        let cmdLogs = `请输入校园网帐号（学号）:${username}\n请输入校园网密码:${password}\n请输入多久检测一次（单位：分钟）:${interval}\n请输入当前计算机用户[${PCUsername}]的密码（用于创建计划任务）:${PCUserPass}\n正在创建定时计划...\n\n`;
+        try {
+            cmdLogs += (0, child_process_1.execSync)(`chcp 437 && schtasks /create /xml "${(0, path_1.join)(workDir, 'OUC-AUTO-Login.xml')}" /tn "OUC-AUTO-Login" /ru "${PCUsername.toLowerCase()}" /rp "${PCUserPass}"`).toString();
+        }
+        catch (e) {
+            cmdLogs += e;
+        }
+        const status = (0, child_process_1.execSync)('schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
+        (0, child_process_1.execSync)('chcp 936');
+        console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
+        console.log(cmdLogs);
+        if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
+            console.log((0, chalk_1.green)(`计划任务${(0, chalk_1.blue)('OUC-AUTO-Login')}创建成功！`));
+        }
+        else {
+            (0, child_process_1.execSync)("start taskschd.msc");
+            console.log((0, chalk_1.red)(`计划任务${(0, chalk_1.blue)('OUC-AUTO-Login')}创建失败！`));
+            console.log((0, chalk_1.blue)(`请自行导入${(0, chalk_1.green)((0, path_1.join)(workDir, 'OUC-AUTO-Login.xml'))}文件\n或删除${(0, chalk_1.green)((0, path_1.join)(workDir, 'OUC-AUTO-Login.xml'))}文件后重新运行本程序！`));
+        }
         const keep = setInterval(() => { }, 3600000);
         console.log('点击右上角关闭此窗口...');
         process.stdin.setRawMode(true);
@@ -73,6 +113,8 @@ const readline_1 = require("readline");
             process.exit(0);
         });
         return;
+    }
+    if ((0, fs_1.existsSync)('OUC-AUTO-Login.xml') && !ARGV.username && !ARGV.password) {
     }
     if (!ARGV.username) {
         (0, tools_1.log)((0, chalk_1.red)('未传入用户名(学号)'));
