@@ -9,7 +9,7 @@ import { blue, green, red } from 'chalk';
 import { createInterface } from 'readline';
 
 (async () => {
-  const version = '1.0.0';
+  const version = '1.0.6';
   console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
   // 获取传入的参数
   const ARGV: {

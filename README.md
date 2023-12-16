@@ -1,6 +1,6 @@
 # ouc-auto-login
 
-自动登录中国海洋大学OUC-AUTO网络帐号。
+自动登录中国海洋大学OUC-AUTO网络帐号，支持Win7及以上系统。
 
 ## 使用方法
 

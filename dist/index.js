@@ -19,7 +19,7 @@ const crontab_1 = require("./crontab");
 const chalk_1 = require("chalk");
 const readline_1 = require("readline");
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const version = '1.0.0';
+    const version = '1.0.6';
     console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
     // 获取传入的参数
     const ARGV = {};
