@@ -2,26 +2,27 @@ import axios from 'axios';
 import { execSync } from 'child_process';
 import { gray, red } from 'chalk';
 import * as dayjs from 'dayjs';
-import { appendFileSync, existsSync, mkdirSync } from 'fs';
+import { appendFileSync } from 'fs';
 import { format } from 'util';
 import type { Interface } from 'readline';
+import * as timezone from 'dayjs/plugin/timezone';
+import * as utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+// dayjs.tz.setDefault('Asia/Shanghai');
 
 const log = (data: any, debug: boolean = false) => {
   if (!debug) {
-    console.log(`${gray(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}]`)} ${format(data)}`);
+    console.log(`${gray(`[${dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')}]`)} ${format(data)}`);
   }
-  if (!existsSync('logs')) {
-    mkdirSync('logs');
-  }
-  appendFileSync(`logs/log-${dayjs().format('YYYY-MM-DD')}.txt`, `[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${format(data).replace(/\x1B\[[\d]*?m/g, '')}\n`);
+  appendFileSync(`logs/log-${dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD')}.txt`, `[${dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')}] ${format(data).replace(/\x1B\[[\d]*?m/g, '')}\n`);
 }
 const ask = (rl: Interface, question: string, isNumber: boolean = false): Promise<string> => new Promise((resolve) => {
   rl.question(`${question}`, (chunk) => {
     const answer = chunk.toString().trim();
     if (isNumber && !/^[\d]+$/.test(answer)) {
-      if (!/^[\d]+$/.test(answer)) {
-        return resolve(ask(rl, red('格式错误，请重新输入:'), isNumber));
-      }
+      return resolve(ask(rl, red('格式错误，请重新输入:'), isNumber));
     }
     return resolve(answer);
   });

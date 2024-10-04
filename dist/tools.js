@@ -16,23 +16,23 @@ const chalk_1 = require("chalk");
 const dayjs = require("dayjs");
 const fs_1 = require("fs");
 const util_1 = require("util");
+const timezone = require("dayjs/plugin/timezone");
+const utc = require("dayjs/plugin/utc");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+// dayjs.tz.setDefault('Asia/Shanghai');
 const log = (data, debug = false) => {
     if (!debug) {
-        console.log(`${(0, chalk_1.gray)(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}]`)} ${(0, util_1.format)(data)}`);
+        console.log(`${(0, chalk_1.gray)(`[${dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')}]`)} ${(0, util_1.format)(data)}`);
     }
-    if (!(0, fs_1.existsSync)('logs')) {
-        (0, fs_1.mkdirSync)('logs');
-    }
-    (0, fs_1.appendFileSync)(`logs/log-${dayjs().format('YYYY-MM-DD')}.txt`, `[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${(0, util_1.format)(data).replace(/\x1B\[[\d]*?m/g, '')}\n`);
+    (0, fs_1.appendFileSync)(`logs/log-${dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD')}.txt`, `[${dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')}] ${(0, util_1.format)(data).replace(/\x1B\[[\d]*?m/g, '')}\n`);
 };
 exports.log = log;
 const ask = (rl, question, isNumber = false) => new Promise((resolve) => {
     rl.question(`${question}`, (chunk) => {
         const answer = chunk.toString().trim();
         if (isNumber && !/^[\d]+$/.test(answer)) {
-            if (!/^[\d]+$/.test(answer)) {
-                return resolve(ask(rl, (0, chalk_1.red)('格式错误，请重新输入:'), isNumber));
-            }
+            return resolve(ask(rl, (0, chalk_1.red)('格式错误，请重新输入:'), isNumber));
         }
         return resolve(answer);
     });
