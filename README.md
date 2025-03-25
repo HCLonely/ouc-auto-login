@@ -29,6 +29,13 @@ sudo chmod 777 OUC-AUTO-Login-linux
 sudo ./OUC-AUTO-Login-linux
 ```
 
+## Mac
+
+```shell
+sudo chmod 777 OUC-AUTO-Login-macos
+sudo ./OUC-AUTO-Login-macos
+```
+
 ## Docker
 
 ```docker run -d --name ouc-auto-login -v ./logs:/usr/src/app/output/logs -e USERNAME=******** -e PASSWORD=****** -e INTERVAL=5 --net=host --restart always hclonely/ouc-auto-login:latest```

@@ -58,6 +58,34 @@ const crontabData = (PCUserSid: string, workDir: string, filePath: string, usern
       <WorkingDirectory>${workDir}</WorkingDirectory>
     </Exec>
   </Actions>
-</Task>`
+</Task>`;
+const crontabDataMac = (workDir: string, filePath: string, username: string, password: string, interval: string = '30') => `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.hclonely.oucautologin</string>
 
-export { crontabData };
+    <key>ProgramArguments</key>
+    <array>
+        <string>${filePath}</string>
+        <string>username=${username}</string>
+        <string>password=${password}</string>
+        <string>workDir=${workDir}</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>${workDir}</string>
+
+    <key>StartInterval</key>
+    <integer>${interval}</integer>
+
+    <key>StandardOutPath</key>
+    <string>${workDir}/oucautologin_output.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>${workDir}/oucautologin_error.log</string>
+</dict>
+</plist>`;
+
+export { crontabData, crontabDataMac };

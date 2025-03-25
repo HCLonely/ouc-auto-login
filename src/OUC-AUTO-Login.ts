@@ -1,10 +1,10 @@
 import * as dayjs from 'dayjs';
-import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync, appendFileSync, mkdirSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync, appendFileSync, mkdirSync, chmodSync } from 'fs';
 import { login, checkNet, log, ask } from './tools';
 import { userInfo, hostname } from 'os';
 import { execSync } from 'child_process';
 import { join, resolve } from 'path';
-import { crontabData } from './crontab';
+import { crontabData, crontabDataMac } from './crontab';
 import { blue, green, red } from 'chalk';
 import { createInterface } from 'readline';
 import { platform } from 'os';
@@ -13,9 +13,7 @@ import * as cron from 'node-cron';
 (async () => {
   const version = '1.0.6';
   console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
-  if (!existsSync('logs')) {
-    mkdirSync('logs');
-  }
+
   // 获取传入的参数
   const ARGV: {
     [name: string]: string
@@ -35,6 +33,13 @@ import * as cron from 'node-cron';
       return;
     }
   });
+  if (ARGV.workDir && existsSync(ARGV.workDir)) {
+    process.chdir(ARGV.workDir); // for mac
+  }
+  if (!existsSync('logs')) {
+    mkdirSync('logs');
+    chmodSync('logs', 0o777);
+  }
 
   if (Object.keys(ARGV).length === 0) {
     if (platform() === 'win32') {
@@ -75,7 +80,6 @@ import * as cron from 'node-cron';
         return;
       }
     } else if (platform() === 'linux') {
-      console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
       let cronText = '';
       if (existsSync('/etc/crontab')) {
         cronText += readFileSync('/etc/crontab').toString();
@@ -103,6 +107,44 @@ import * as cron from 'node-cron';
           }
         }
         process.exit(0);
+      }
+    } else if (platform() === 'darwin') {
+      const plistPath = `/Library/LaunchDaemons/com.hclonely.oucautologin.plist`;
+      if (existsSync(plistPath)) {
+        console.log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
+
+        const rl = createInterface({
+          input: process.stdin,
+          output: process.stdout
+        });
+        const select = await ask(rl, `输入0删除计划任务${green('OUC-AUTO-Login')}, 输入其他内容退出本程序:`, true);
+
+        if (select === '0') {
+          try {
+            execSync(`launchctl unload ${plistPath}`);
+          } catch (e) { }
+          try {
+            execSync(`launchctl remove com.hclonely.oucautologin`);
+          } catch (e) { }
+          if (existsSync(plistPath)) {
+            unlinkSync(plistPath);
+          }
+          if (existsSync(plistPath)) {
+            console.log(red(`计划任务${green('OUC-AUTO-Login')}删除失败，请尝试自行删除！`));
+          } else {
+            console.log(green(`计划任务${blue('OUC-AUTO-Login')}删除成功！`));
+          }
+        } else {
+          process.exit(0);
+        }
+        const keep = setInterval(() => { }, 3600000);
+        console.log('按任意键关闭此窗口...');
+        process.stdin.setRawMode(true);
+        process.stdin.on('data', () => {
+          clearInterval(keep);
+          process.exit(0);
+        });
+        return;
       }
     }
   }
@@ -174,6 +216,34 @@ import * as cron from 'node-cron';
         console.log(`输入 ${blue('sudo vi /etc/crontab')} 后新增一行 ${`0/${interval} * * * * cd ${resolve(workDir)} && ./OUC-AUTO-Login-linux username=${username} password=${password}`}`);
       }
       process.exit(0);
+    } else if (platform() === 'darwin') {
+      const workDir = process.cwd();
+      const plistPath = `/Library/LaunchDaemons/com.hclonely.oucautologin.plist`;
+      const filePath = join(workDir, 'OUC-AUTO-Login-macos');
+      const rl = createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+      const username = await ask(rl, '请输入校园网帐号（学号）:', true);
+      const password = await ask(rl, '请输入校园网密码:');
+      const interval = await ask(rl, '请输入多久检测一次（单位：分钟）:', true) || '15';
+      rl.close();
+      writeFileSync(plistPath, crontabDataMac(workDir, filePath, username, password, `${parseInt(interval, 10) * 60}`));
+
+      console.log(`正在创建定时计划...`);
+      execSync(`launchctl load ${plistPath}`);
+      const status = execSync(`launchctl list | grep com.hclonely.oucautologin`).toString();
+      if (status.includes('com.')) {
+        console.log(green(`计划任务${blue('com.hclonely.oucautologin')}创建成功！`));
+        process.exit(0);
+      }
+      const keep = setInterval(() => { }, 3600000);
+      console.log('点击左上角关闭此窗口...');
+      process.stdin.setRawMode(true);
+      process.stdin.on('data', () => {
+        clearInterval(keep);
+        process.exit(0);
+      });
     }
     return;
   }
