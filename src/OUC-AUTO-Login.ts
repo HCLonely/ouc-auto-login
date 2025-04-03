@@ -11,7 +11,7 @@ import { platform } from 'os';
 import * as cron from 'node-cron';
 
 (async () => {
-  const version = '1.0.6';
+  const version = '1.1.1';
   console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
 
   // 获取传入的参数
@@ -149,7 +149,14 @@ import * as cron from 'node-cron';
     }
   }
 
-  if (!ARGV.username && !ARGV.password) {
+  if (!ARGV.username) {
+    log(red('未传入用户名(学号)'));
+  }
+  if (!ARGV.password) {
+    log(red('未传入密码'));
+  }
+
+  if (!ARGV.username || !ARGV.password) {
     if (platform() === 'win32') {
       const PCUsername = `${hostname()}\\${userInfo().username}`;
       const PCUserSid = Object.fromEntries(execSync('whoami /user').toString().split(/(\r?\n)+/).map((data) => data.trim().split(/[\s]+/)))[PCUsername.toLowerCase()];
@@ -252,30 +259,6 @@ import * as cron from 'node-cron';
 
   }
 
-
-  if (!ARGV.username) {
-    log(red('未传入用户名(学号)'));
-    const keep = setInterval(() => { }, 3600000);
-    console.log('按任意键关闭此窗口...');
-    process.stdin.setRawMode(true);
-    process.stdin.on('data', () => {
-      clearInterval(keep);
-      process.exit(0);
-    });
-    return;
-  }
-  if (!ARGV.password) {
-    log(red('未传入密码'));
-    const keep = setInterval(() => { }, 3600000);
-    console.log('按任意键关闭此窗口...');
-    process.stdin.setRawMode(true);
-    process.stdin.on('data', () => {
-      clearInterval(keep);
-      process.exit(0);
-    });
-    return;
-  }
-
   // 清除昨天之前的日志
   if (existsSync('logs')) {
     readdirSync('logs').forEach((filename) => {
@@ -299,7 +282,7 @@ import * as cron from 'node-cron';
       return true;
     }
     log('网络未连接，尝试登录中...');
-    if (await login(ARGV.username, ARGV.password)) {
+    if (await login(ARGV.username, ARGV.password, ARGV.area as 'laoshan' | 'xihaian')) {
       return log('登陆成功!');
     }
     log('登陆失败!');
