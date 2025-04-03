@@ -21,7 +21,7 @@ const readline_1 = require("readline");
 const os_2 = require("os");
 const cron = require("node-cron");
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const version = '1.0.6';
+    const version = '1.1.1';
     console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
     // 获取传入的参数
     const ARGV = {};
@@ -40,8 +40,7 @@ const cron = require("node-cron");
         }
     });
     if (ARGV.workDir && (0, fs_1.existsSync)(ARGV.workDir)) {
-        process.chdir(ARGV.workDir);
-        console.log(`已切换到工作目录：${process.cwd()}`);
+        process.chdir(ARGV.workDir); // for mac
     }
     if (!(0, fs_1.existsSync)('logs')) {
         (0, fs_1.mkdirSync)('logs');
@@ -160,7 +159,13 @@ const cron = require("node-cron");
             }
         }
     }
-    if (!ARGV.username && !ARGV.password) {
+    if (!ARGV.username) {
+        (0, tools_1.log)((0, chalk_1.red)('未传入用户名(学号)'));
+    }
+    if (!ARGV.password) {
+        (0, tools_1.log)((0, chalk_1.red)('未传入密码'));
+    }
+    if (!ARGV.username || !ARGV.password) {
         if ((0, os_2.platform)() === 'win32') {
             const PCUsername = `${(0, os_1.hostname)()}\\${(0, os_1.userInfo)().username}`;
             const PCUserSid = Object.fromEntries((0, child_process_1.execSync)('whoami /user').toString().split(/(\r?\n)+/).map((data) => data.trim().split(/[\s]+/)))[PCUsername.toLowerCase()];
@@ -258,28 +263,6 @@ const cron = require("node-cron");
     }
     if ((0, fs_1.existsSync)('OUC-AUTO-Login.xml') && !ARGV.username && !ARGV.password) {
     }
-    if (!ARGV.username) {
-        (0, tools_1.log)((0, chalk_1.red)('未传入用户名(学号)'));
-        const keep = setInterval(() => { }, 3600000);
-        console.log('按任意键关闭此窗口...');
-        process.stdin.setRawMode(true);
-        process.stdin.on('data', () => {
-            clearInterval(keep);
-            process.exit(0);
-        });
-        return;
-    }
-    if (!ARGV.password) {
-        (0, tools_1.log)((0, chalk_1.red)('未传入密码'));
-        const keep = setInterval(() => { }, 3600000);
-        console.log('按任意键关闭此窗口...');
-        process.stdin.setRawMode(true);
-        process.stdin.on('data', () => {
-            clearInterval(keep);
-            process.exit(0);
-        });
-        return;
-    }
     // 清除昨天之前的日志
     if ((0, fs_1.existsSync)('logs')) {
         (0, fs_1.readdirSync)('logs').forEach((filename) => {
@@ -303,7 +286,7 @@ const cron = require("node-cron");
                 return true;
             }
             (0, tools_1.log)('网络未连接，尝试登录中...');
-            if (yield (0, tools_1.login)(ARGV.username, ARGV.password)) {
+            if (yield (0, tools_1.login)(ARGV.username, ARGV.password, ARGV.area)) {
                 return (0, tools_1.log)('登陆成功!');
             }
             (0, tools_1.log)('登陆失败!');

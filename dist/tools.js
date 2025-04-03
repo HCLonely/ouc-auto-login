@@ -38,14 +38,12 @@ const ask = (rl, question, isNumber = false) => new Promise((resolve) => {
     });
 });
 exports.ask = ask;
-const loginNode = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+const loginNode = (username, password, loginUrl, userIp) => __awaiter(void 0, void 0, void 0, function* () {
     return (0, axios_1.default)({
-        url: `http://192.168.101.201:801/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=0.0.0.0&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh`,
+        url: `${loginUrl}/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=${userIp}&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh`,
         method: 'get',
         responseType: 'text',
         headers: {
-            'Host': '192.168.101.201:801',
-            'Referer': 'http://192.168.101.201/',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
         }
     })
@@ -62,10 +60,10 @@ const loginNode = (username, password) => __awaiter(void 0, void 0, void 0, func
         return false;
     });
 });
-const loginShell = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+const loginShell = (username, password, loginUrl, userIp) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const result = (_a = (0, child_process_1.execSync)(`curl -sS "http://192.168.101.201:801/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=0.0.0.0&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh" -H "Host: 192.168.101.201:801" -H "Referer: http://192.168.101.201/" -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27")`)) === null || _a === void 0 ? void 0 : _a.toString();
+        const result = (_a = (0, child_process_1.execSync)(`curl -sS "${loginUrl}/eportal/portal/login?callback=AutoLogin&login_method=1&user_account=${username}&user_password=${password}&wlan_user_ip=${userIp}&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=&wlan_ac_name=&jsVersion=4.1&terminal_type=1&lang=zh-cn&v=3689&lang=zh" -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27"`)) === null || _a === void 0 ? void 0 : _a.toString();
         log(result, true);
         if ((result === null || result === void 0 ? void 0 : result.includes('认证成功')) || (result === null || result === void 0 ? void 0 : result.includes('已经在线'))) {
             return true;
@@ -77,8 +75,49 @@ const loginShell = (username, password) => __awaiter(void 0, void 0, void 0, fun
         return false;
     }
 });
-const login = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
-    return (yield loginNode(username, password)) || (yield loginShell(username, password));
+const getIpNode = () => __awaiter(void 0, void 0, void 0, function* () {
+    return (0, axios_1.default)({
+        url: 'https://wxrz.ouc.edu.cn/',
+        method: 'get',
+        responseType: 'text',
+        headers: {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
+        }
+    })
+        .then((response) => {
+        var _a, _b;
+        log(response, true);
+        const ip = (_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.match(/v64ip='(\d+\.\d+\.\d+\.\d+)'/)) === null || _b === void 0 ? void 0 : _b[1];
+        return ip;
+    })
+        .catch((error) => {
+        log(error, true);
+        return null;
+    });
+});
+const getIpShell = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        const result = (_b = (0, child_process_1.execSync)(`curl -sS -k "https://wxrz.ouc.edu.cn/" --resolve wxrz.ouc.edu.cn:443:10.100.29.2 -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27" | grep -Po "v46?ip='\\d+.\\d+.\\d+.\\d+'" | grep -Po -m 1 "\\d+.\\d+.\\d+.\\d+"`)) === null || _b === void 0 ? void 0 : _b.toString();
+        log(result, true);
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(result)) {
+            return result;
+        }
+        return '0.0.0.0';
+    }
+    catch (error) {
+        log(error, true);
+        return '0.0.0.0';
+    }
+});
+const login = (username, password, area = 'xihaian') => __awaiter(void 0, void 0, void 0, function* () {
+    const loginUrls = {
+        laoshan: 'https://10.100.29.2:802',
+        xihaian: 'http://192.168.101.201:801'
+    };
+    const loginUrl = loginUrls[area] || loginUrls['xihaian'];
+    const ip = (yield getIpNode()) || (yield getIpShell()) || '0.0.0.0';
+    return (yield loginNode(username, password, loginUrl, ip)) || (yield loginShell(username, password, loginUrl, ip));
 });
 exports.login = login;
 const checkNetNode = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -89,7 +128,11 @@ const checkNetNode = () => __awaiter(void 0, void 0, void 0, function* () {
         timeout: 60000
     })
         .then((response) => {
+        var _a;
         log(response, true);
+        if ((_a = response.data) === null || _a === void 0 ? void 0 : _a.includes('wxrz.ouc.edu.cn')) {
+            return false;
+        }
         return true;
     })
         .catch((error) => {
@@ -102,7 +145,7 @@ const checkNetShell = () => {
     try {
         const result = (_a = (0, child_process_1.execSync)(`curl -sS --connect-timeout 60 http://baidu.com`)) === null || _a === void 0 ? void 0 : _a.toString();
         log(result, true);
-        if (result === null || result === void 0 ? void 0 : result.includes('NextURL')) {
+        if ((result === null || result === void 0 ? void 0 : result.includes('NextURL')) || (result === null || result === void 0 ? void 0 : result.includes('wxrz.ouc.edu.cn'))) {
             return false;
         }
         return true;
