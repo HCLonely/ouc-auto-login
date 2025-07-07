@@ -21,8 +21,8 @@ import * as cron from 'node-cron';
 
   Object.entries(process.env || {}).forEach(([name, value]) => {
     // const [name, value] = e.split('=');
-    if (['username', 'password', 'interval'].includes(name.toLowerCase())) {
-      ARGV[name.toLowerCase()] = `${value}`;
+    if (['username', 'password', 'interval'].includes(name)) {
+      ARGV[name] = `${value}`;
       return;
     }
   });
@@ -40,7 +40,6 @@ import * as cron from 'node-cron';
     mkdirSync('logs');
     chmodSync('logs', 0o777);
   }
-
   if (Object.keys(ARGV).length === 0) {
     if (platform() === 'win32') {
       const status = execSync('chcp 437 && schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));

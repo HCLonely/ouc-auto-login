@@ -49,7 +49,7 @@ const loginNode = (username, password, loginUrl, userIp) => __awaiter(void 0, vo
     })
         .then((response) => {
         var _a, _b;
-        log(response, true);
+        log(response === null || response === void 0 ? void 0 : response.data, true);
         if (((_a = response.data) === null || _a === void 0 ? void 0 : _a.includes('认证成功')) || ((_b = response.data) === null || _b === void 0 ? void 0 : _b.includes('已经在线'))) {
             return true;
         }
@@ -86,7 +86,7 @@ const getIpNode = () => __awaiter(void 0, void 0, void 0, function* () {
     })
         .then((response) => {
         var _a, _b;
-        log(response, true);
+        log(response === null || response === void 0 ? void 0 : response.data, true);
         const ip = (_b = (_a = response.data) === null || _a === void 0 ? void 0 : _a.match(/v64ip='(\d+\.\d+\.\d+\.\d+)'/)) === null || _b === void 0 ? void 0 : _b[1];
         return ip;
     })
@@ -129,7 +129,7 @@ const checkNetNode = () => __awaiter(void 0, void 0, void 0, function* () {
     })
         .then((response) => {
         var _a;
-        log(response, true);
+        log(response === null || response === void 0 ? void 0 : response.data, true);
         if ((_a = response.data) === null || _a === void 0 ? void 0 : _a.includes('wxrz.ouc.edu.cn')) {
             return false;
         }

@@ -27,8 +27,8 @@ const cron = require("node-cron");
     const ARGV = {};
     Object.entries(process.env || {}).forEach(([name, value]) => {
         // const [name, value] = e.split('=');
-        if (['username', 'password', 'interval'].includes(name.toLowerCase())) {
-            ARGV[name.toLowerCase()] = `${value}`;
+        if (['username', 'password', 'interval'].includes(name)) {
+            ARGV[name] = `${value}`;
             return;
         }
     });

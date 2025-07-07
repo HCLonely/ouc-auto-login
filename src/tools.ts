@@ -38,7 +38,7 @@ const loginNode = async (username: string, password: string, loginUrl: string, u
     }
   })
     .then((response) => {
-      log(response, true);
+      log(response?.data, true);
       if (response.data?.includes('认证成功') || response.data?.includes('已经在线')) {
         return true;
       }
@@ -72,7 +72,7 @@ const getIpNode = async (): Promise<string | null | undefined> => {
     }
   })
     .then((response) => {
-      log(response, true);
+      log(response?.data, true);
       const ip = response.data?.match(/v64ip='(\d+\.\d+\.\d+\.\d+)'/)?.[1];
       return ip;
     })
@@ -112,7 +112,7 @@ const checkNetNode = async (): Promise<boolean> => {
     timeout: 60000
   })
     .then((response) => {
-      log(response, true);
+      log(response?.data, true);
       if (response.data?.includes('wxrz.ouc.edu.cn')) {
         return false;
       }
