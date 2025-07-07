@@ -47,13 +47,12 @@ const cron = require("node-cron");
         (0, fs_1.chmodSync)('logs', 0o777);
     }
     if (Object.keys(ARGV).length === 0) {
-        console.log((0, os_2.platform)());
         if ((0, os_2.platform)() === 'win32') {
             const status = (0, child_process_1.execSync)('chcp 437 && schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
             (0, child_process_1.execSync)('chcp 936');
             console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
+            console.log(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
             if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
-                console.log(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
                 const rl = (0, readline_1.createInterface)({
                     input: process.stdin,
                     output: process.stdout
