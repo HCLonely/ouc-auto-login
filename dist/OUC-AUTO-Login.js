@@ -52,39 +52,39 @@ const cron = require("node-cron");
             (0, child_process_1.execSync)('chcp 936');
             console.log(`OUC-AUTO-Login ${(0, chalk_1.blue)(`v${version}`)} By ${(0, chalk_1.green)('HCLonely')}\n`);
             console.log(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}已存在！`);
-            if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
-                const rl = (0, readline_1.createInterface)({
-                    input: process.stdin,
-                    output: process.stdout
-                });
-                const select = yield (0, tools_1.ask)(rl, `输入0删除计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}, 输入其他内容退出本程序:`, true);
-                if ((0, fs_1.existsSync)('OUC-AUTO-Login.xml')) {
-                    (0, fs_1.unlinkSync)('OUC-AUTO-Login.xml');
-                }
-                if (select === '0') {
-                    (0, child_process_1.execSync)(`chcp 437 && schtasks /delete /tn "OUC-AUTO-Login" /f`);
-                    const status = (0, child_process_1.execSync)('schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
-                    (0, child_process_1.execSync)('chcp 936');
-                    if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
-                        console.log((0, chalk_1.red)(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}删除失败，请尝试自行删除！`));
-                        (0, child_process_1.execSync)("start taskschd.msc");
-                    }
-                    else {
-                        console.log((0, chalk_1.green)(`计划任务${(0, chalk_1.blue)('OUC-AUTO-Login')}删除成功！`));
-                    }
+            // if (status?.includes('Ready') || status?.includes('Running')) {
+            const rl = (0, readline_1.createInterface)({
+                input: process.stdin,
+                output: process.stdout
+            });
+            const select = yield (0, tools_1.ask)(rl, `输入0删除计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}, 输入其他内容退出本程序:`, true);
+            if ((0, fs_1.existsSync)('OUC-AUTO-Login.xml')) {
+                (0, fs_1.unlinkSync)('OUC-AUTO-Login.xml');
+            }
+            if (select === '0') {
+                (0, child_process_1.execSync)(`chcp 437 && schtasks /delete /tn "OUC-AUTO-Login" /f`);
+                const status = (0, child_process_1.execSync)('schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
+                (0, child_process_1.execSync)('chcp 936');
+                if ((status === null || status === void 0 ? void 0 : status.includes('Ready')) || (status === null || status === void 0 ? void 0 : status.includes('Running'))) {
+                    console.log((0, chalk_1.red)(`计划任务${(0, chalk_1.green)('OUC-AUTO-Login')}删除失败，请尝试自行删除！`));
+                    (0, child_process_1.execSync)("start taskschd.msc");
                 }
                 else {
-                    process.exit(0);
+                    console.log((0, chalk_1.green)(`计划任务${(0, chalk_1.blue)('OUC-AUTO-Login')}删除成功！`));
                 }
-                const keep = setInterval(() => { }, 3600000);
-                console.log('按任意键关闭此窗口...');
-                process.stdin.setRawMode(true);
-                process.stdin.on('data', () => {
-                    clearInterval(keep);
-                    process.exit(0);
-                });
-                return;
             }
+            else {
+                process.exit(0);
+            }
+            const keep = setInterval(() => { }, 3600000);
+            console.log('按任意键关闭此窗口...');
+            process.stdin.setRawMode(true);
+            process.stdin.on('data', () => {
+                clearInterval(keep);
+                process.exit(0);
+            });
+            return;
+            // }
         }
         else if ((0, os_2.platform)() === 'linux') {
             let cronText = '';

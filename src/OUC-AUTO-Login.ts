@@ -46,37 +46,37 @@ import * as cron from 'node-cron';
       execSync('chcp 936');
       console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
       console.log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
-      if (status?.includes('Ready') || status?.includes('Running')) {
-        const rl = createInterface({
-          input: process.stdin,
-          output: process.stdout
-        });
-        const select = await ask(rl, `输入0删除计划任务${green('OUC-AUTO-Login')}, 输入其他内容退出本程序:`, true);
-        if (existsSync('OUC-AUTO-Login.xml')) {
-          unlinkSync('OUC-AUTO-Login.xml');
-        }
-        if (select === '0') {
-          execSync(`chcp 437 && schtasks /delete /tn "OUC-AUTO-Login" /f`);
-          const status = execSync('schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
-          execSync('chcp 936');
-          if (status?.includes('Ready') || status?.includes('Running')) {
-            console.log(red(`计划任务${green('OUC-AUTO-Login')}删除失败，请尝试自行删除！`));
-            execSync("start taskschd.msc");
-          } else {
-            console.log(green(`计划任务${blue('OUC-AUTO-Login')}删除成功！`));
-          }
-        } else {
-          process.exit(0);
-        }
-        const keep = setInterval(() => { }, 3600000);
-        console.log('按任意键关闭此窗口...');
-        process.stdin.setRawMode(true);
-        process.stdin.on('data', () => {
-          clearInterval(keep);
-          process.exit(0);
-        });
-        return;
+      // if (status?.includes('Ready') || status?.includes('Running')) {
+      const rl = createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+      const select = await ask(rl, `输入0删除计划任务${green('OUC-AUTO-Login')}, 输入其他内容退出本程序:`, true);
+      if (existsSync('OUC-AUTO-Login.xml')) {
+        unlinkSync('OUC-AUTO-Login.xml');
       }
+      if (select === '0') {
+        execSync(`chcp 437 && schtasks /delete /tn "OUC-AUTO-Login" /f`);
+        const status = execSync('schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
+        execSync('chcp 936');
+        if (status?.includes('Ready') || status?.includes('Running')) {
+          console.log(red(`计划任务${green('OUC-AUTO-Login')}删除失败，请尝试自行删除！`));
+          execSync("start taskschd.msc");
+        } else {
+          console.log(green(`计划任务${blue('OUC-AUTO-Login')}删除成功！`));
+        }
+      } else {
+        process.exit(0);
+      }
+      const keep = setInterval(() => { }, 3600000);
+      console.log('按任意键关闭此窗口...');
+      process.stdin.setRawMode(true);
+      process.stdin.on('data', () => {
+        clearInterval(keep);
+        process.exit(0);
+      });
+      return;
+      // }
     } else if (platform() === 'linux') {
       let cronText = '';
       if (existsSync('/etc/crontab')) {
@@ -146,7 +146,7 @@ import * as cron from 'node-cron';
       }
     }
   }
-return
+  return
   if (!ARGV.username) {
     log(red('未传入用户名(学号)'));
   }
