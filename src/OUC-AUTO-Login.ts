@@ -146,7 +146,6 @@ import * as cron from 'node-cron';
       }
     }
   }
-  return
   if (!ARGV.username) {
     log(red('未传入用户名(学号)'));
   }

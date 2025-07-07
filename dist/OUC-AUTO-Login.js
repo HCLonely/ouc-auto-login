@@ -159,7 +159,6 @@ const cron = require("node-cron");
             }
         }
     }
-    return;
     if (!ARGV.username) {
         (0, tools_1.log)((0, chalk_1.red)('未传入用户名(学号)'));
     }
