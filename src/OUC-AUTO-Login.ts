@@ -281,7 +281,7 @@ import * as cron from 'node-cron';
       return true;
     }
     log('网络未连接，尝试登录中...');
-    if (await login(ARGV.username, ARGV.password, ARGV.area as 'laoshan' | 'xihaian')) {
+    if (await login(ARGV.username, ARGV.password, ARGV.area as 'laoshan' | 'xihaian' || 'xihaian')) {
       return log('登陆成功!');
     }
     log('登陆失败!');

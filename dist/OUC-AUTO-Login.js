@@ -286,7 +286,7 @@ const cron = require("node-cron");
                 return true;
             }
             (0, tools_1.log)('网络未连接，尝试登录中...');
-            if (yield (0, tools_1.login)(ARGV.username, ARGV.password, ARGV.area)) {
+            if (yield (0, tools_1.login)(ARGV.username, ARGV.password, ARGV.area || 'xihaian')) {
                 return (0, tools_1.log)('登陆成功!');
             }
             (0, tools_1.log)('登陆失败!');
