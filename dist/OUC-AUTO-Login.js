@@ -47,6 +47,7 @@ const cron = require("node-cron");
         (0, fs_1.chmodSync)('logs', 0o777);
     }
     if (Object.keys(ARGV).length === 0) {
+        console.log((0, os_2.platform)());
         if ((0, os_2.platform)() === 'win32') {
             const status = (0, child_process_1.execSync)('chcp 437 && schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
             (0, child_process_1.execSync)('chcp 936');
@@ -159,6 +160,7 @@ const cron = require("node-cron");
             }
         }
     }
+    return;
     if (!ARGV.username) {
         (0, tools_1.log)((0, chalk_1.red)('未传入用户名(学号)'));
     }

@@ -45,9 +45,8 @@ import * as cron from 'node-cron';
       const status = execSync('chcp 437 && schtasks /query').toString().split(/(\r?\n)+/).find((data) => data.includes('OUC-AUTO-Login'));
       execSync('chcp 936');
       console.log(`OUC-AUTO-Login ${blue(`v${version}`)} By ${green('HCLonely')}\n`);
+      console.log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
       if (status?.includes('Ready') || status?.includes('Running')) {
-        console.log(`计划任务${green('OUC-AUTO-Login')}已存在！`);
-
         const rl = createInterface({
           input: process.stdin,
           output: process.stdout
@@ -147,7 +146,7 @@ import * as cron from 'node-cron';
       }
     }
   }
-
+return
   if (!ARGV.username) {
     log(red('未传入用户名(学号)'));
   }
